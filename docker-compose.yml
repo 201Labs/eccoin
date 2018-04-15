@@ -1,0 +1,90 @@
+version: '3.5'
+services:
+  node1:
+    build:
+      context: .
+    restart: always
+    stdin_open: true
+    tty: true
+    networks:
+      - eccoin-network
+    ports: 
+      - 30000:30000
+      - 30001:30001
+    #volumes:
+    #  - /Users/dyoung/Library/Application Support/eccoin/testnet0-temporary:/root/.eccoin/testnet0-temporary
+    command: ./ECCoin/src/ECCoind -testnet0 -printtoconsole -rpcport=30001 -dnsseed=0 -rpcuser=yourusername -debug -rpcpassword=yourpassword -rpcallowip=0.0.0.0/0
+  node2:
+    build:
+      context: .
+    restart: always
+    stdin_open: true
+    tty: true
+    networks:
+      - eccoin-network
+    depends_on:
+      - node1
+    ports:
+      - 30002:30000
+      - 30003:30001
+    command: ./ECCoin/src/ECCoind -testnet0 -printtoconsole -rpcport=30001 -dnsseed=0 -rpcuser=yourusername -debug -rpcpassword=yourpassword -rpcallowip=0.0.0.0/0 -addnode=node1
+  node3:
+    build:
+      context: .
+    restart: always
+    stdin_open: true
+    tty: true
+    networks:
+      - eccoin-network
+    depends_on:
+      - node2
+    ports:
+      - 30004:30000
+      - 30005:30001
+    command: ./ECCoin/src/ECCoind -testnet0 -printtoconsole -rpcport=30001 -dnsseed=0 -rpcuser=yourusername -debug -rpcpassword=yourpassword -rpcallowip=0.0.0.0/0 -addnode=node1 -addnode=node2
+  # node4:
+  #   build:
+  #     context: .
+  #   restart: always
+  #   stdin_open: true
+  #   tty: true
+  #   networks:
+  #     - eccoin-network
+  #   depends_on:
+  #     - node3
+  #   ports:
+  #     - 30006:30000
+  #     - 30007:30001
+  #   command: ./ECCoin/src/ECCoind -testnet0 -printtoconsole -rpcport=30001 -dnsseed=0 -rpcuser=yourusername -debug -rpcpassword=yourpassword -rpcallowip=0.0.0.0/0 -addnode=node1 -addnode=node2 -addnode=node3
+  # node5:
+  #   build:
+  #     context: .
+  #   restart: always
+  #   stdin_open: true
+  #   tty: true
+  #   networks:
+  #     - eccoin-network
+  #   depends_on:
+  #     - node4
+  #   ports:
+  #     - 30008:30000
+  #     - 30009:30001
+  #   command: ./ECCoin/src/ECCoind -testnet0 -printtoconsole -rpcport=30001 -dnsseed=0 -rpcuser=yourusername -debug -rpcpassword=yourpassword -rpcallowip=0.0.0.0/0 -addnode=node1 -addnode=node2 -addnode=node3 -addnode=node4
+  # node6:
+  #   build:
+  #     context: .
+  #   restart: always
+  #   stdin_open: true
+  #   tty: true
+  #   networks:
+  #     - eccoin-network
+  #   depends_on:
+  #     - node5
+  #   ports:
+  #     - 30010:30000
+  #     - 30011:30001
+  #   command: ./ECCoin/src/ECCoind -testnet0 -printtoconsole -rpcport=30001 -dnsseed=0 -rpcuser=yourusername -debug -rpcpassword=yourpassword -rpcallowip=0.0.0.0/0 -addnode=node1 -addnode=node2 -addnode=node3 -addnode=node4 -addnode=node5
+
+networks:
+  eccoin-network:
+    name: eccoin-network
